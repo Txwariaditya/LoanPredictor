@@ -53,6 +53,27 @@ def predict(data: LoanRequest):
         input_df
     )
 
+    probability = model.predict_proba(
+        input_df
+        )
+
+    confidence = float(
+        probability[0][prediction[0]]
+    )
+    
+    label_map = {
+    0: "Not Approved",
+    1: "Approved"
+    }
+    
+    loan_status = label_map[
+    prediction[0]
+    ]
+
     return {
-        "prediction": int(prediction[0])
+        "loan_status": loan_status,
+        "confidence": f"{confidence:.2%}" 
     }   
+    
+
+
