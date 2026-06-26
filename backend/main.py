@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import pandas as pd
 import joblib
 import os
+from pydantic import BaseModel, Field
+from typing import Literal
 
 # Resolve path relative to this script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -40,6 +42,35 @@ def home():
         "message": "Loan prediction API running"
     }
     
+class LoanRequest(BaseModel):
+
+    Age: int = Field(
+        ge=18,
+        le= 100
+    )
+    
+    Credit_Score: float = Field(
+        ge= 350,
+        le= 900
+    )
+    
+    Applicant_Income: float = Field(
+        ge=0
+    )
+    
+    Coapplicant_Income: float = Field(
+        ge=0
+    )
+    
+    
+    Dependents: int = Field(
+        ge=0, 
+        le=10
+        )
+    
+    Gender: Literal["Male", "Female"]
+    Employment_Status: Literal['Salaried', 'Self-employed', 'Contract', 'Unemployed']
+    
 @app.post("/predict")
 def predict(data: LoanRequest):
 
@@ -74,6 +105,7 @@ def predict(data: LoanRequest):
         "loan_status": loan_status,
         "confidence": f"{confidence:.2%}" 
     }   
+    
     
 
 
